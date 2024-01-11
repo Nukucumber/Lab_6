@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+        <title> Карточка читателя </title>
+        
+        {% macro render_book_card(book) %}
+
+            <form method="get" class="book_container">
+                {% for i in range(len(book)) %}
+                    <ul class="book_card">
+                        {% for name in book.dtypes.index %}
+                        <li>{{name}}: <b>{{book.loc[i, name]}}</b></li>
+                        {% endfor %}
+                        {% if book.loc[i, "Количество"] == 0 %}
+                            <button disabled type="submit" name="borrow_book" value={{book.loc[i, "book_id"]}}>Выбрать</button>
+                        {% else %}
+                            <button type="submit" name="borrow_book" value={{book.loc[i, "book_id"]}}>Выбрать</button>
+                        {% endif %}
+                    </ul>
+                {% endfor %}
+            </form method="get">
+        {% endmacro %}
+        
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li class ="active"><a href={{ url_for("index")}}>Поиск книг</a></li>
+            </ul>
+        </div>
+        
+        <form action="{{url_for("search")}}" class="filter_menu">
+            {% if len(chosen_genre) != 0 %}
+                <details open>
+            {% else %}
+                <details>
+            {% endif %}
+                <summary><b>Жанр</b></summary>
+                {% for i in range(len(genre)) %}
+                <p>
+                    {% if genre.loc[i, "genre_name"] in chosen_genre %}
+                        <label><input checked type="checkbox" name="{{genre.loc[i, "genre_name"]}}" value="{{genre.loc[i, "genre_id"]}}">{{genre.loc[i, "genre_name"]}} ({{genre.loc[i, "count"]}})</label>
+                    {% else %}
+                        <label><input type="checkbox" name="{{genre.loc[i, "genre_name"]}}" value="{{genre.loc[i, "genre_id"]}}">{{genre.loc[i, "genre_name"]}} ({{genre.loc[i, "count"]}})</label>
+                    {% endif %}
+                </p>
+                {% endfor %}
+            </details>
+            {% if len(chosen_author) != 0 %}
+                <details open>
+            {% else %}
+                <details>
+            {% endif %}
+                <summary><b>Автор</b></summary>
+                {% for i in range(len(author)) %}
+                    <p>
+                        {% if author.loc[i, "author_name"] in chosen_author %}
+                            <label><input checked type="checkbox" name="{{author.loc[i, "author_name"]}}" value="{{author.loc[i, "author_id"]}}">{{author.loc[i, "author_name"]}}  ({{author.loc[i, "count"]}})</label>
+                        {% else %}
+                            <label><input type="checkbox" name="{{author.loc[i, "author_name"]}}" value="{{author.loc[i, "author_id"]}}">{{author.loc[i, "author_name"]}}  ({{author.loc[i, "count"]}})</label>
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </details>
+            {% if len(chosen_publisher) != 0 %}
+                <details open>
+            {% else %}
+                <details>
+            {% endif %}
+                <summary><b>Издательство</b></summary>
+                {% for i in range(len(publisher)) %}
+                    <p>
+                        {% if publisher.loc[i, "publisher_name"] in chosen_publisher %}
+                            <label><input checked type="checkbox" name="{{publisher.loc[i, "publisher_name"]}}" value="{{publisher.loc[i, "publisher_id"]}}">{{publisher.loc[i, "publisher_name"]}}  ({{publisher.loc[i, "count"]}})</label>
+                        {% else %}
+                            <label><input type="checkbox" name="{{publisher.loc[i, "publisher_name"]}}" value="{{publisher.loc[i, "publisher_id"]}}">{{publisher.loc[i, "publisher_name"]}}  ({{publisher.loc[i, "count"]}})</label>
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </details>
+            <input type="submit" name="search" value="Найти">
+            <input type="submit" name="clear_filter" value="Очистить">
+        </form>
+
+        <div class="block">
+            <form action="{{url_for("index")}}" method="get">
+                <input type="submit" value="Не выбирать книгу">
+            </form>
+            <p>
+                <font color="red">
+                    {% if len(chosen_genre) != 0 %}
+                        Жанры: 
+                        {% for item in chosen_genre%}
+                            {{item}},
+                        {% endfor %}
+                    {% endif %}
+                    {% if len(chosen_author) != 0 %}
+                        Авторы: 
+                        {% for item in chosen_author%}
+                            {{item}},
+                        {% endfor %}
+                    {% endif %}
+                    {% if len(chosen_publisher) != 0 %}
+                        Издательства: 
+                        {% for item in chosen_publisher%}
+                            {{item}},
+                        {% endfor %}
+                    {% endif %}
+                </font>
+            </p>
+            {{render_book_card(book)}}
+        </div>
+    </body>
+</html>

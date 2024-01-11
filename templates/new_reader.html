@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+        <title> Карточка читателя </title>        
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li class ="active"><a href={{ url_for("index")}}>Новый читатель</a></li>
+            </ul>
+        </div>
+        <div class="block">
+            <p>
+                <form action='{{url_for("new_reader")}}' method ="get">
+                    <p>
+                        Имя читателя:
+                        <input type="text" name="new_reader">
+                    </p>
+                    <input type="submit" name="add" value="Добавить читателя">
+                    <input type="submit" name="cancel" value="Отменить">
+                </form>
+            </p>
+        </div>
+    </body>
+</html>
